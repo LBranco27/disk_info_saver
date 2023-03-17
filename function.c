@@ -90,7 +90,6 @@ void save_file_bst(char *name, bst a){
 	if(file != NULL) {
 		save_aux_bst(a, file);
 		fclose(file);
-		free(a);
 	}
 }
 void save_file_avl(char *name, avl a){
@@ -99,7 +98,6 @@ void save_file_avl(char *name, avl a){
 	if(file != NULL) {
 		save_aux_avl(a, file);
 		fclose(file);
-		free(a);
 	}
 }
 void save_file_rb(char *name, rb a){
@@ -108,7 +106,6 @@ void save_file_rb(char *name, rb a){
 	if(file != NULL) {
 		save_aux_rb(a, file);
 		fclose(file);
-		free(a);
 	}
 }
 
@@ -133,7 +130,7 @@ void save_aux_avl(avl root, FILE *file){
 }
 void save_aux_rb(rb root, FILE *file){
 	if(root != NULL){
-		fwrite(&root->data, sizeof(index_date), 1, file);
+		fwrite(root->data, sizeof(index_date), 1, file);
 		save_aux_rb(root->left, file);
 		save_aux_rb(root->right, file);
 	}
@@ -246,8 +243,8 @@ bst remove_disk_bst(bst root, char *name){
 avl remove_disk_avl(avl root, char *name){
 	return delete_avl(root, name);
 }
-void remove_disk_rb(rb root, char *name){
-	delete_rb(&root, name);
+void remove_disk_rb(rb *root, char *name){
+	delete_rb(root, name);
 }
 
 disk *search_disk_bst(bst root, char *name, table_name *tab){

@@ -173,7 +173,7 @@ int main(){
 					scanf("%s", name);
 					switch (name[0]) {
 						case 'y':
-							remove_disk_rb(tab_rb.index, date);
+							remove_disk_rb(&tab_rb.index, date);
 							break;
 						case 'n':
 							break;

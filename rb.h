@@ -73,10 +73,10 @@ void right_rotate_rb(node_rb **root, node_rb *x) {
 
 
 node_rb *search_rb(node_rb *root, char *key) {
-		puts("rodou");
+		//puts("rodou");
 		//printf("strcmp:%d\n", strcmp(root->data->key, key));
 	if (root == NULL || strcmp(root->data->key, key) == 0 || strcmp(root->data->key, key) == 10) {
-		puts("retornou");
+		//puts("retornou");
 		return root;
 	}
 	if (strcmp(root->data->key, key) > 0) {
@@ -108,6 +108,8 @@ node_rb *successor_rb(node_rb *x) {
 
 void insert_rb(node_rb **root, index_date *data) {
     //BST insert
+	//puts("insertrb");
+	//printf("indexdata:%s\n", data->key);
     node_rb *z = create_node_rb(data);
     node_rb *y = NULL;
     node_rb *x = *root;
