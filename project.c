@@ -170,6 +170,7 @@ int main(){
 					tab.index = remove_disk_bst(tab.index, name);
 					tab_avl.index = remove_disk_avl(tab_avl.index, tags);
 					printf("WARNING: Do you want to delete from RB tree? This can lead to catastrophic consequences. (y or n):");
+					//nao tive tempo para testar corretamente essa funcao, pode funcionar mas pode tambem nao funcionar. A ultima vez que usei, funcionou, mas ja aconteceu de falhar tantas vezes que nao tenho confianca.
 					scanf("%s", name);
 					switch (name[0]) {
 						case 'y':
