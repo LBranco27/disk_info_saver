@@ -37,7 +37,7 @@ node_bst *insert_bst (node_bst *root, index_name *data) {
 	if (root == NULL){
 		return create_node_bst_bst(data);
 	}
-	if (data->key[0] < root->data->key[0]) {
+	if (strcmp(data->key, root->data->key) < 0) {
 		root->left = insert_bst(root->left, data);
 	} else {
 		root->right = insert_bst(root->right, data);
@@ -47,31 +47,26 @@ node_bst *insert_bst (node_bst *root, index_name *data) {
 
 node_bst *delete_bst(node_bst *root, char *name) {
 	if(root == NULL) {
-		puts("Disk name not found");
 		return root;
 	}
-	if (name[0] < root->data->key[0]){
+	if (strcmp(name, root->data->key) < -10){
 		root->left = delete_bst(root->left, name);
 	}
-	else if (name[0] > root->data->key[0]){
+	else if (strcmp(name, root->data->key) > -10){
 		root->right = delete_bst(root->right, name);
 	} else {
 		if (root->left == NULL){
-			if(strcmp(root->data->key, name) == 10){
 				node_bst *temp = root->right;
 				free(root);
-				puts("Disk deleted!");
+				puts("\nDisk deleted from BST!");
 				return temp;
-			}
 			return root;
 		}
 		else if (root->right == NULL){
-			if(strcmp(root->data->key, name) == 10){
 				node_bst *temp = root->left;
 				free(root);
-				puts("Disk deleted!");
+				puts("\nDisk deleted from BST!");
 				return temp;
-			}
 			return root;
 		}
 		node_bst *temp = min_value_bst(root->right);
@@ -87,7 +82,7 @@ node_bst *search_bst(node_bst *bst, char *name){
 	if(bst == NULL || strcmp(bst->data->key, name) == 10 || strcmp(bst->data->key, name) == 0){
 		return bst;
 	}
-	if(name[0] < bst->data->key[0]){
+	if(strcmp(name, bst->data->key) < 0){
 		return search_bst(bst->left, name);
 	} else {
 		return search_bst(bst->right, name);

@@ -32,7 +32,7 @@ void initialize_rb(rb *root){
 }
 //
 //
-void print_tree_bst(bst, table_name*);
+disk *print_tree_bst(bst, table_name*);
 void print_tree_avl(avl, table_name*);
 void print_tree_rb(rb, table_name*);
 //
@@ -90,6 +90,7 @@ void save_file_bst(char *name, bst a){
 	if(file != NULL) {
 		save_aux_bst(a, file);
 		fclose(file);
+		free(a);
 	}
 }
 void save_file_avl(char *name, avl a){
@@ -98,6 +99,7 @@ void save_file_avl(char *name, avl a){
 	if(file != NULL) {
 		save_aux_avl(a, file);
 		fclose(file);
+		free(a);
 	}
 }
 void save_file_rb(char *name, rb a){
@@ -106,6 +108,7 @@ void save_file_rb(char *name, rb a){
 	if(file != NULL) {
 		save_aux_rb(a, file);
 		fclose(file);
+		free(a);
 	}
 }
 
@@ -160,9 +163,9 @@ bst load_file_bst (char *name, bst a) {
 				}
 			}
 			temp->key = name;
-			printf("\ntemp.key = %s", temp->key);
+			//printf("\ntemp.key = %s", temp->key);
 			fread(&temp->index, sizeof(int), 1, file);
-			printf("\ntemp.index = %d", temp->index);
+			//printf("\ntemp.index = %d", temp->index);
 			a = insert_bst(a, temp);
 			name = (char*) malloc(sizeof(char)*300);
 			temp = (index_name*) malloc(sizeof(index_name));
@@ -179,7 +182,9 @@ avl load_file_avl (char *name, avl a) {
 	if(file != NULL){
 		temp = (index_tags*) malloc(sizeof(index_tags));
 		while(fread(temp, sizeof(index_tags), 1, file)) {
+			//puts("inserted");
 			a = insert_avl(a, temp);
+			temp = (index_tags*) malloc(sizeof(index_tags));
 		}
 		fclose(file);
 	}
@@ -193,6 +198,7 @@ rb load_file_rb (char *name, rb a) {
 		temp = (index_date*) malloc(sizeof(index_date));
 		while(fread(temp, sizeof(index_date), 1, file)) {
 			insert_rb(&a, temp);
+			temp = (index_date*) malloc(sizeof(index_date));
 		}
 		fclose(file);
 	}
@@ -222,7 +228,8 @@ void add_disk(table_name *tab, disk *disk, table_tags *tab_avl, table_date *tab_
 		new_rb->index = pos_new_register;
 		insert_rb(&tab_rb->index, new_rb);
 	
-		printf("%ld",fwrite(disk->name, sizeof(char), strlen(disk->name), tab->file));
+		fwrite(disk->name, sizeof(char), strlen(disk->name), tab->file);
+		//printf("%ld",);
 		fwrite("\0", sizeof(char), 1,tab->file);
 		fwrite(disk->content, sizeof(disk->content), 1, tab->file);
 		fwrite(disk->date, sizeof(disk->date), 1, tab->file);
@@ -243,12 +250,13 @@ void remove_disk_rb(rb root, char *name){
 	delete_rb(&root, name);
 }
 
-void search_disk_bst(bst root, char *name, table_name *tab){
+disk *search_disk_bst(bst root, char *name, table_name *tab){
 	bst temp = search_bst(root, name);
 	if(temp != NULL){
-		print_tree_bst(temp, tab);
+		return print_tree_bst(temp, tab);
 	} else {
-		printf("\nNome não encontrado!\n");
+		printf("\nNome not found!\n");
+		return NULL;
 	}
 }
 void search_disk_avl(avl root, char *name, table_tags *tab, table_name *tab_n){
@@ -256,15 +264,19 @@ void search_disk_avl(avl root, char *name, table_tags *tab, table_name *tab_n){
 	if(temp != NULL){
 		print_tree_avl(temp, tab_n);
 	} else {
-		printf("\nTags não encontrado!\n");
+		printf("\nTags not found!\n");
 	}
 } 
 void search_disk_rb(rb root, char *name, table_date *tab, table_name *tab_n){
+	if(root == NULL){
+		return;
+	}
 	rb temp = search_rb(root, name);
 	if(temp != NULL){
+	puts("print_tree_rb");
 		print_tree_rb(temp, tab_n);
 	} else {
-		printf("\nData não encontrada!\n");
+		printf("\nDate not found!\n");
 	}
 }
 
@@ -301,7 +313,7 @@ disk *read_data(){
 }
 // TREE - TREE - TREE - TREE -
 
-void print_tree_bst(bst root, table_name *tab) {
+disk *print_tree_bst(bst root, table_name *tab) {
 	char *name = (char*) malloc(sizeof(char)*300);
 	disk *temp = (disk*) malloc(sizeof(disk));
 	fseek(tab->file, root->data->index, SEEK_SET);
@@ -321,12 +333,13 @@ void print_tree_bst(bst root, table_name *tab) {
 	fread(temp->tags, sizeof(temp->tags), 1, tab->file);
 	fread(temp->extra, sizeof(temp->extra), 1, tab->file);
 	printf("\n[name: %s content: %s date: %s tags: %s extra: %s]\n", temp->name, temp->content, temp->date, temp->tags, temp->extra);
-	free(temp);
+	return temp;
 	free(name);
 }
 void print_tree_avl(avl root, table_name *tab) {
 	char *name = (char*) malloc(sizeof(char)*300);
 	disk *temp = (disk*) malloc(sizeof(disk));
+	//puts("printed");
 	fseek(tab->file, root->data->index, SEEK_SET);
 	for(int i = 0; i<300; i++){
 		if((name[i] = fgetc(tab->file)) == '\0' || name[i] == -1){
@@ -349,6 +362,13 @@ void print_tree_avl(avl root, table_name *tab) {
 void print_tree_rb(rb root, table_name *tab) {
 	char *name = (char*) malloc(sizeof(char)*300);
 	disk *temp = (disk*) malloc(sizeof(disk));
+	if (root == NULL) {
+		free(temp);
+		free(name);
+		puts("Empty tree!");
+		return;
+	}
+	//printf("root->data->index:%s\n", root->data->key);
 	fseek(tab->file, root->data->index, SEEK_SET);
 	//fseek(tab->file, 0, SEEK_SET);
 	for(int i = 0; i<300; i++){

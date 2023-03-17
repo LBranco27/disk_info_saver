@@ -5,6 +5,8 @@
 int main(){
 	int choice = 0;
 	char name[255];
+	char tags[128];
+	char date[32];
 	
 	table_name tab;
 	table_tags tab_avl;
@@ -137,26 +139,48 @@ int main(){
 				scanf("%d", &choice);
 				switch(choice){
 					case 1:
+						printf("type the name:");
 						scanf("%s", name);
 						search_disk_bst(tab.index, name, &tab);
 						break;
 					case 2:
+						printf("type the tags:");
 						scanf("%s", name);
 						search_disk_avl(tab_avl.index, name ,&tab_avl, &tab);
 						break;
 					case 3:
+						printf("type the date:");
 						scanf("%s", name);
 						search_disk_rb(tab_rb.index, name ,&tab_rb, &tab);
 						break;
 					default:
 						break;
 				}
+				break;
 			case 4:
 				printf("Type the name of the disk to delete: ");
 				scanf("%s", name);
-				tab.index = remove_disk_bst(tab.index, name);
-				tab_avl.index = remove_disk_avl(tab_avl.index, name);
-				remove_disk_rb(tab_rb.index, name);
+				
+				disk *disko;
+				disko = search_disk_bst(tab.index, name, &tab);
+				if(disko != NULL){
+					strcpy(tags, disko->tags);
+					strcpy(date, disko->date);
+
+					tab.index = remove_disk_bst(tab.index, name);
+					tab_avl.index = remove_disk_avl(tab_avl.index, tags);
+					printf("WARNING: Do you want to delete from RB tree? This can lead to catastrophic consequences. (y or n):");
+					scanf("%s", name);
+					switch (name[0]) {
+						case 'y':
+							remove_disk_rb(tab_rb.index, date);
+							break;
+						case 'n':
+							break;
+						default:
+							break;
+					}
+				}
 				break;
 			case 11:
 				height(tab.index);

@@ -83,15 +83,22 @@ node_avl *min_value_avl(node_avl *root) {
 }
 
 node_avl *insert_avl (node_avl *root, index_tags *data){
+	//puts("insertalv");
+	//printf("strcmp:%s\n", data->key);
+	//printf("a:%s\n", data->key);
 	if (root == NULL){
+		//puts("criado");
 		return create_node(data);
 	}
-	if ( data->key[0] < root->data->key[0] ) {
+	//printf("a:%s\nb:%s\n", data->key, root->data->key);
+	if (strcmp(data->key, root->data->key) < 0) {
+		//puts("left");
 		root->left = insert_avl(root->left, data);
-	}
-	else if ( data->key[0] < root->data->key[0] ) {
+	} else if (strcmp(data->key, root->data->key) > 0) {
+		//puts("right");
 		root->right = insert_avl(root->right, data);
-	}else{
+	} else {
+		//puts("naoinserido");
 		return root;
 	}
 
@@ -99,20 +106,20 @@ node_avl *insert_avl (node_avl *root, index_tags *data){
 
 	int balance = balancen(root);
 
-	if (balance > 1 && data->key[0] < root->left->data->key[0] ) {
+	if (balance > 1 && strcmp(data->key, root->left->data->key) < 0) {
 		return rotate_right(root);
 	}
 
-	if (balance < -1 && data->key[0] > root->right->data->key[0] ) {
+	if (balance < -1 && strcmp(data->key, root->right->data->key) > 0) {
 		return rotate_left(root);
 	}
 
-	if (balance > 1 && data->key[0] > root->left->data->key[0]) {
+	if (balance > 1 && strcmp(data->key, root->left->data->key) > 0){
 		root->left = rotate_left(root->left);
 		return rotate_right(root);
 	}
 
-	if (balance < -1 && data->key[0] < root->right->data->key[0]) {
+	if (balance < -1 && strcmp(data->key, root->right->data->key) < 0) {
 		root->right = rotate_right(root->right);
 		return rotate_left(root);
 	}
@@ -121,46 +128,73 @@ node_avl *insert_avl (node_avl *root, index_tags *data){
 }
 
 node_avl *delete_avl(node_avl *root, char *name){
+	//printf("name:%s\n", name);
+	//printf("root->data->key:%s\n", root->data->key);
+	//printf("strcmpavl:%d\n", strcmp(name, root->data->key));
+	
 	if(root == NULL) {
 		puts("Disk name not found");
 		return root;
 	}
-	if (name[0] < root->data->key[0]){
+	if (strcmp(name, root->data->key) < 0) {
 		root->left = delete_avl(root->left, name);
 	}
-	else if (name[0] > root->data->key[0]){
+	else if (strcmp(name, root->data->key) > 0){
 		root->right = delete_avl(root->right, name);
 	} else {
-		if (root->left == NULL){
-			if(strcmp(root->data->key, name) == 10){
-				node_avl *temp = root->right;
-				free(root);
-				puts("Disk deleted!");
-				return temp;
+		if ((root->left == NULL) || (root->right == NULL)){
+			node_avl *temp = NULL;
+			if(root->left != NULL){
+				temp = root->left;
+			} else {
+				temp = root->right;
 			}
-			return root;
-		}
-		else if (root->right == NULL){
-			if(strcmp(root->data->key, name) == 10){
-				node_avl *temp = root->left;
-				free(root);
-				puts("Disk deleted!");
-				return temp;
+			if (temp == NULL){
+				temp = root;
+				root = NULL;
+			} else {
+				*root = *temp;
 			}
-			return root;
-		}
+			free(temp);
+			puts("\nDisk deleted from AVL!");
+		} else {
 		node_avl *temp = min_value_avl(root->right);
 		root->data = temp->data;
-		root->right = delete_avl(root->right, name);
+		root->right = delete_avl(root->right, temp->data->key);
+		}
+	}
+	if(root == NULL){
+		return root;
+	}
+
+	root->height = 1 + max(heightc(root->left), heightc(root->right));
+
+	int balance = balancen(root);
+	
+	if (balance > 1 && balancen(root->left) >= 0) {
+		return rotate_right(root);
+	}
+	if (balance > 1 && balancen(root->left) < 0) {
+		root->left = rotate_left(root->left);
+		return rotate_right(root);
+	}
+	if (balance < -1 && balancen(root->right) <= 0) {
+		return rotate_left(root);
+	}
+	if(balance < -1 && balancen(root->right) > 0) {
+		root->right = rotate_right(root->right);
+		return rotate_left(root);
 	}
 	return root;
 }
 
 node_avl *search_avl(node_avl *avl, char *name){
+	//printf("rb:%s\n", avl);
+	//printf("strcmp:%d\n", strcmp(avl->data->key, name));
 	if(avl == NULL || strcmp(avl->data->key, name) == 10 || strcmp(avl->data->key, name) == 0) {
 		return avl;
 	}
-	if(name[0] < avl->data->key[0]){
+	if(strcmp(name, avl->data->key) < 0){
 		return search_avl(avl->left, name);
 	} else {
 		return search_avl(avl->right, name);
