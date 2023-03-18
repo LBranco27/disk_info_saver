@@ -140,17 +140,20 @@ int main(){
 				switch(choice){
 					case 1:
 						printf("type the name:");
-						scanf("%s", name);
+						getchar();
+						scanf ("%[^\n]%*c", name);
 						search_disk_bst(tab.index, name, &tab);
 						break;
 					case 2:
 						printf("type the tags:");
-						scanf("%s", name);
+						getchar();
+						scanf ("%[^\n]%*c", name);
 						search_disk_avl(tab_avl.index, name ,&tab_avl, &tab);
 						break;
 					case 3:
 						printf("type the date:");
-						scanf("%s", name);
+						getchar();
+						scanf ("%[^\n]%*c", name);
 						search_disk_rb(tab_rb.index, name ,&tab_rb, &tab);
 						break;
 					default:
@@ -159,7 +162,9 @@ int main(){
 				break;
 			case 4:
 				printf("Type the name of the disk to delete: ");
-				scanf("%s", name);
+				getchar();
+				//fgets(name, sizeof(name), stdin);
+				scanf ("%[^\n]%*c", name);
 				
 				disk *disko;
 				disko = search_disk_bst(tab.index, name, &tab);
@@ -169,18 +174,19 @@ int main(){
 
 					tab.index = remove_disk_bst(tab.index, name);
 					tab_avl.index = remove_disk_avl(tab_avl.index, tags);
-					printf("WARNING: Do you want to delete from RB tree? This can lead to catastrophic consequences. (y or n):");
+					//printf("WARNING: Do you want to delete from RB tree? This can lead to catastrophic consequences. (y or n):");
 					//nao tive tempo para testar corretamente essa funcao, pode funcionar mas pode tambem nao funcionar. A ultima vez que usei, funcionou, mas ja aconteceu de falhar tantas vezes que nao tenho confianca.
-					scanf("%s", name);
-					switch (name[0]) {
-						case 'y':
+					//scanf("%s", name);
+					//switch (name[0]) {
+					//	case 'y':
 							remove_disk_rb(&tab_rb.index, date);
-							break;
-						case 'n':
-							break;
-						default:
-							break;
-					}
+							puts("\nDisk deleted from RB!");
+					//		break;
+					//	case 'n':
+					//		break;
+					//	default:
+					//		break;
+					//}
 				}
 				break;
 			case 11:

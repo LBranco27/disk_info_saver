@@ -79,6 +79,7 @@ node_bst *delete_bst(node_bst *root, char *name) {
 node_bst *search_bst(node_bst *bst, char *name){
 	//printf("\nkey:%s\n", bst->data->key);
 	
+	//printf("strcmp(bst->data->key, name):%d\n", strcmp(bst->data->key, name));
 	if(bst == NULL || strcmp(bst->data->key, name) == 10 || strcmp(bst->data->key, name) == 0){
 		return bst;
 	}

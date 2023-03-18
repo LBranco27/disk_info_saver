@@ -252,7 +252,7 @@ disk *search_disk_bst(bst root, char *name, table_name *tab){
 	if(temp != NULL){
 		return print_tree_bst(temp, tab);
 	} else {
-		printf("\nNome not found!\n");
+		printf("\nName not found!\n");
 		return NULL;
 	}
 }
@@ -270,7 +270,7 @@ void search_disk_rb(rb root, char *name, table_date *tab, table_name *tab_n){
 	}
 	rb temp = search_rb(root, name);
 	if(temp != NULL){
-	puts("print_tree_rb");
+	//puts("print_tree_rb");
 		print_tree_rb(temp, tab_n);
 	} else {
 		printf("\nDate not found!\n");
